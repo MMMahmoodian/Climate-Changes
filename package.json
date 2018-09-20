@@ -11,6 +11,7 @@
   "author": "M.Mahdi Mahmoodian",
   "license": "ISC",
   "dependencies": {
+    "js": "^0.1.0",
     "ol": "^5.2.0"
   },
   "devDependencies": {

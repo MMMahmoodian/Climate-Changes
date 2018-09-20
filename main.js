@@ -11,6 +11,8 @@ import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style.js';
 import { transform as Transform } from 'ol/proj';
 import BingMaps from 'ol/source/BingMaps.js';
 
+// import createItems from 'ol/tripleM/LayerList.js';
+
 
 
 var defaultStyle = {
@@ -88,35 +90,40 @@ var dragAndDropInteraction = new DragAndDrop({
         TopoJSON
     ]
 });
+var subs = new ImageLayer({
+    opacity: 0.9,
+    title: "subs",
+    // extent: [-13884991, 2870341, -7455066, 6338219],
+    source: new ImageWMS({
+        url: 'http://chakadwebgis.ir:8080/geoserver/wms',
+        params: {
+            'LAYERS': 'vaghefi:subs1_projected'
+        },
+        ratio: 1,
+
+        serverType: 'geoserver'
+    })
+});
+var layers = new ImageLayer({
+    title: "layers",
+    // extent: [-13884991, 2870341, -7455066, 6338219],
+    source: new ImageWMS({
+        url: 'http://chakadwebgis.ir:8080/geoserver/wms',
+        params: { 'LAYERS': 'vaghefi:lfp-projected,vaghefi:Hydrostns_projected,vaghefi:ClimateStns-projected' },
+        ratio: 1,
+        serverType: 'geoserver'
+    })
+});
 
 var map = new Map({
     interactions: defaultInteractions().extend([dragAndDropInteraction]),
     layers: [
         new TileLayer({
-            source: new BingMaps({key: "AnL0-0C9IRmJdvpeTCwi-0FU6NEqQ48a74_PsiXM5AijLH7AXAslLTXQ_pYrkHL-", imagerySet: 'Aerial'})
+            title: "basemap",
+            source: new BingMaps({ key: "AnL0-0C9IRmJdvpeTCwi-0FU6NEqQ48a74_PsiXM5AijLH7AXAslLTXQ_pYrkHL-", imagerySet: 'Aerial' })
         }),
-        new ImageLayer({
-            opacity: 0.9,
-            // extent: [-13884991, 2870341, -7455066, 6338219],
-            source: new ImageWMS({
-                url: 'http://chakadwebgis.ir:8080/geoserver/wms',
-                params: {
-                    'LAYERS': 'vaghefi:subs1_projected'
-                },
-                ratio: 1,
-
-                serverType: 'geoserver'
-            })
-        }),
-        new ImageLayer({
-            // extent: [-13884991, 2870341, -7455066, 6338219],
-            source: new ImageWMS({
-                url: 'http://chakadwebgis.ir:8080/geoserver/wms',
-                params: { 'LAYERS': 'vaghefi:lfp-projected,vaghefi:Hydrostns_projected,vaghefi:ClimateStns-projected' },
-                ratio: 1,
-                serverType: 'geoserver'
-            })
-        })
+        subs,
+        layers
     ],
     target: 'map',
     view: new View({
@@ -142,7 +149,7 @@ var displayFeatureInfo = function (pixel) {
     map.forEachFeatureAtPixel(pixel, function (feature) {
         features.push(feature);
     });
-    console.log(features);
+    // console.log(features);
     if (features.length > 0) {
         var info = [];
         var i, ii;
@@ -166,4 +173,36 @@ map.on('pointermove', function (evt) {
 
 map.on('click', function (evt) {
     displayFeatureInfo(evt.pixel);
+});
+var LayerListUl = document.getElementById("layerlistul");
+map.getLayers().forEach(function (layer) {
+    var title = layer.get('title');
+    if (title != "basemap") {
+        
+        var li = document.createElement("li");
+        var div = document.createElement("div");
+        div.setAttribute("class", "material-switch pull-right");
+
+        var input = document.createElement("input");
+        input.setAttribute("type", "checkbox");
+        input.setAttribute("id", title);
+        input.setAttribute("name", title);
+        input.checked = true;
+        var label = document.createElement("label");
+        label.setAttribute("for", title);
+        label.setAttribute("class", "label-success");
+        li.appendChild(document.createTextNode(title));
+        div.appendChild(input);
+        div.appendChild(label);
+
+        li.appendChild(div);
+        li.setAttribute("class", "list-group-item");
+        LayerListUl.appendChild(li);
+
+        input.addEventListener( 'change', function() {
+            // layer.visible = this.checked;
+            layer.set('visible', this.checked);
+        });
+    }
+
 });

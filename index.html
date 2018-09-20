@@ -5,18 +5,38 @@
     <meta charset="utf-8">
     <title>Climate Change</title>
     <link rel="stylesheet" href="https://openlayers.org/en/v5.2.0/css/ol.css" type="text/css">
-    <style>
-        
-    </style>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="styles/custom.css" rel="stylesheet" id="bootstrap-css">
 </head>
 
 <body>
-    <div id="map"></div>
-    <div id="layerlist">
-        
+    <div id="ToolBox">
+        <button id="LayerListToggle" class="btn btn-primary" type="button">Layer List</button>
     </div>
+    <div id="LayerListPopup" class="popup">
+        <div class="popup-content">
+            <button class="close" id="CloseLayerList">&times;</button>
+            <p>Toggle Layers</p>
+            <ul class="layerlist-group" id="layerlistul">
+
+                <!-- a sample of li check box
+                    <li class="list-group-item">
+                    Bootstrap Switch Success
+                    <div class="material-switch pull-right">
+                        <input id="someSwitchOptionSuccess" name="someSwitchOption001" type="checkbox" />
+                        <label for="someSwitchOptionSuccess" class="label-success"></label>
+                    </div>
+                </li> -->
+            </ul>
+        </div>
+    </div>
+    <div id="map"></div>
     <div id="info">&nbsp;</div>
-    <script src="./index.js"></script>
+    <script src="main.js"></script>
+    <script src="js/tools/LayerList.js"></script>
+    <!-- <script src="js/modules/LayerList.js"></script> -->
 </body>
 
 </html>
