@@ -1,7 +1,7 @@
 {
   "name": "climate-changes",
   "version": "1.0.0",
-  "description": "",
+  "description": "A map about Climate changes",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,9 +12,18 @@
   "license": "ISC",
   "dependencies": {
     "js": "^0.1.0",
-    "ol": "^5.2.0"
+    "ol": "^5.2.0",
+    "parcel": "^1.9.7"
   },
   "devDependencies": {
     "parcel-bundler": "^1.9.7"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MMMahmoodian/Climate-Changes.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MMMahmoodian/Climate-Changes/issues"
+  },
+  "homepage": "https://github.com/MMMahmoodian/Climate-Changes#readme"
 }
