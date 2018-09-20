@@ -104,12 +104,34 @@ var subs = new ImageLayer({
         serverType: 'geoserver'
     })
 });
-var layers = new ImageLayer({
-    title: "layers",
+var lfp = new ImageLayer({
+    title: "lfp",
     // extent: [-13884991, 2870341, -7455066, 6338219],
     source: new ImageWMS({
         url: 'http://chakadwebgis.ir:8080/geoserver/wms',
-        params: { 'LAYERS': 'vaghefi:lfp-projected,vaghefi:Hydrostns_projected,vaghefi:ClimateStns-projected' },
+        params: { 'LAYERS': 'vaghefi:lfp-projected' },
+        ratio: 1,
+        serverType: 'geoserver'
+    })
+});
+
+var Hydrostns = new ImageLayer({
+    title: "Hydrostns",
+    // extent: [-13884991, 2870341, -7455066, 6338219],
+    source: new ImageWMS({
+        url: 'http://chakadwebgis.ir:8080/geoserver/wms',
+        params: { 'LAYERS': 'vaghefi:Hydrostns_projected' },
+        ratio: 1,
+        serverType: 'geoserver'
+    })
+});
+
+var ClimateStns = new ImageLayer({
+    title: "ClimateStns",
+    // extent: [-13884991, 2870341, -7455066, 6338219],
+    source: new ImageWMS({
+        url: 'http://chakadwebgis.ir:8080/geoserver/wms',
+        params: { 'LAYERS': 'vaghefi:ClimateStns-projected' },
         ratio: 1,
         serverType: 'geoserver'
     })
@@ -123,7 +145,9 @@ var map = new Map({
             source: new BingMaps({ key: "AnL0-0C9IRmJdvpeTCwi-0FU6NEqQ48a74_PsiXM5AijLH7AXAslLTXQ_pYrkHL-", imagerySet: 'Aerial' })
         }),
         subs,
-        layers
+        lfp,
+        Hydrostns,
+        ClimateStns
     ],
     target: 'map',
     view: new View({
