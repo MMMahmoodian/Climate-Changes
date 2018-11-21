@@ -152,6 +152,8 @@ var map = new Map({
     target: 'map',
     view: new View({
         center: Transform([8.001124, 46.450142], 'EPSG:4326', 'EPSG:3857'),
+        
+        // center: Transform([51.43 , 35.701949], 'EPSG:4326', 'EPSG:3857'),
         // projection: projection,
         zoom: 11
     })
