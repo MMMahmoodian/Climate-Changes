@@ -16,6 +16,65 @@ import { bbox as bboxStrategy } from 'ol/loadingstrategy.js';
 
 
 var styleJson = readFile('./json/test.json');
+console.log(styleJson);
+
+
+var pcpStyle = [
+    new Style({
+        fill: new Fill({
+            color: 'rgba(255,0,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    }),
+    new Style({
+        fill: new Fill({
+            color: 'rgba(200,50,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    }),
+    new Style({
+        fill: new Fill({
+            color: 'rgba(150,100,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    }),
+    new Style({
+        fill: new Fill({
+            color: 'rgba(100,150,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    }),
+    new Style({
+        fill: new Fill({
+            color: 'rgba(50,200,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    }),
+    new Style({
+        fill: new Fill({
+            color: 'rgba(0,255,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    })
+];
 var defaultStyle = {
     'Point': new Style({
         image: new CircleStyle({
@@ -269,6 +328,7 @@ map.getLayers().forEach(function (layer) {
 
 
 function setStyle(feature, resolution){
+    console.log("set style called!");
     var id = feature.get('OBJECTID');
     var element = styleJson[id - 1]["PCP"];
     console.log(element);
@@ -285,60 +345,3 @@ function readFile(path) {
     }
     return JSON.parse(result);
 }
-
-var pcpStyle = [
-    new Style({
-        fill: new Fill({
-            color: 'rgba(255,0,0,1)'
-        }),
-        stroke: new Stroke({
-            color: '#0ff',
-            width: 1
-        })
-    }),
-    new Style({
-        fill: new Fill({
-            color: 'rgba(200,50,0,1)'
-        }),
-        stroke: new Stroke({
-            color: '#0ff',
-            width: 1
-        })
-    }),
-    new Style({
-        fill: new Fill({
-            color: 'rgba(150,100,0,1)'
-        }),
-        stroke: new Stroke({
-            color: '#0ff',
-            width: 1
-        })
-    }),
-    new Style({
-        fill: new Fill({
-            color: 'rgba(100,150,0,1)'
-        }),
-        stroke: new Stroke({
-            color: '#0ff',
-            width: 1
-        })
-    }),
-    new Style({
-        fill: new Fill({
-            color: 'rgba(50,200,0,1)'
-        }),
-        stroke: new Stroke({
-            color: '#0ff',
-            width: 1
-        })
-    }),
-    new Style({
-        fill: new Fill({
-            color: 'rgba(0,255,0,1)'
-        }),
-        stroke: new Stroke({
-            color: '#0ff',
-            width: 1
-        })
-    })
-]
