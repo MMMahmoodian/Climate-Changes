@@ -10,11 +10,12 @@ import { OSM, Vector as VectorSource } from 'ol/source.js';
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style.js';
 import { transform as Transform } from 'ol/proj';
 import BingMaps from 'ol/source/BingMaps.js';
+import { bbox as bboxStrategy } from 'ol/loadingstrategy.js';
 
 // import createItems from 'ol/tripleM/LayerList.js';
 
 
-
+var styleJson = readFile('./json/test.json');
 var defaultStyle = {
     'Point': new Style({
         image: new CircleStyle({
@@ -90,48 +91,78 @@ var dragAndDropInteraction = new DragAndDrop({
         TopoJSON
     ]
 });
-var subs = new ImageLayer({
-    opacity: 0.9,
-    title: "subs",
+var Aletsch_riv = new ImageLayer({
+    title: "Aletsch_riv",
     // extent: [-13884991, 2870341, -7455066, 6338219],
     source: new ImageWMS({
-        url: 'http://chakadwebgis.ir:8080/geoserver/wms',
+        url: 'http://95.216.0.116:8080/geoserver/wms',
         params: {
-            'LAYERS': 'vaghefi:subs1_projected'
+            'LAYERS': 'Glacier:Aletsch_riv'
         },
         ratio: 1,
 
         serverType: 'geoserver'
     })
 });
-var lfp = new ImageLayer({
-    title: "lfp",
+// console.log(Aletsch_riv.get('OBJECTID'));
+// var Aletsch_sub = new ImageLayer({
+//     opacity: 0.5,    
+    
+//     title: "Aletsch_sub",
+//     // extent: [-13884991, 2870341, -7455066, 6338219],
+//     source: new ImageWMS({
+//         url: 'http://95.216.0.116:8080/geoserver/wms',
+//         params: { 'LAYERS': 'Glacier:Aletsch_sub' },
+//         ratio: 1,
+//         serverType: 'geoserver'
+//     }),
+//     style: new Style({
+//         fill: new Fill({
+//             color: 'rgba(255,0,0,0.1)'
+//         }),
+//         stroke: new Stroke({
+//             color: '#0ff',
+//             width: 1
+//         })
+//     })
+// });
+
+var Aletsch_subSource = new VectorSource({
+    format: new GeoJSON(),
+    url: function (extent) {
+        return 'http://chakadwebgis.ir/geoserver/vaghefi/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=vaghefi:subs1_projected&' +
+            'outputFormat=application/json&srsname=EPSG:4326&' +
+            'bbox=' + extent.join(',') + ',EPSG:4326';
+    },
+    // maxFeatures=50&outputFormat=application%2Fjson
+    strategy: bboxStrategy
+});
+
+
+var Aletsch_sub = new VectorLayer({
+    source: Aletsch_subSource,
+    style: setStyle
+});
+
+var Gorner_riv = new ImageLayer({
+    title: "Gorner_riv",
     // extent: [-13884991, 2870341, -7455066, 6338219],
     source: new ImageWMS({
-        url: 'http://chakadwebgis.ir:8080/geoserver/wms',
-        params: { 'LAYERS': 'vaghefi:lfp-projected' },
+        url: 'http://95.216.0.116:8080/geoserver/wms',
+        params: { 'LAYERS': 'Glacier:Gorner_riv' },
         ratio: 1,
         serverType: 'geoserver'
     })
 });
 
-var Hydrostns = new ImageLayer({
-    title: "Hydrostns",
+var Gorner_Sub = new ImageLayer({
+    opacity: 0.5,
+    
+    title: "Gorner_Sub",
     // extent: [-13884991, 2870341, -7455066, 6338219],
     source: new ImageWMS({
-        url: 'http://chakadwebgis.ir:8080/geoserver/wms',
-        params: { 'LAYERS': 'vaghefi:Hydrostns_projected' },
-        ratio: 1,
-        serverType: 'geoserver'
-    })
-});
-
-var ClimateStns = new ImageLayer({
-    title: "ClimateStns",
-    // extent: [-13884991, 2870341, -7455066, 6338219],
-    source: new ImageWMS({
-        url: 'http://chakadwebgis.ir:8080/geoserver/wms',
-        params: { 'LAYERS': 'vaghefi:ClimateStns-projected' },
+        url: 'http://95.216.0.116:8080/geoserver/wms',
+        params: { 'LAYERS': 'Glacier:Gorner_Sub' },
         ratio: 1,
         serverType: 'geoserver'
     })
@@ -142,20 +173,20 @@ var map = new Map({
     layers: [
         new TileLayer({
             title: "basemap",
-            source: new BingMaps({ key: "AnL0-0C9IRmJdvpeTCwi-0FU6NEqQ48a74_PsiXM5AijLH7AXAslLTXQ_pYrkHL-", imagerySet: 'Aerial' })
+            source: new BingMaps({ key: "AuZoV8yCqZQq3raQl6Wb-EHw1ssB4cgvs3sczPfg0fqrelVtOvGze1FwJvJ9Ooy0", imagerySet: 'Aerial' })
         }),
-        subs,
-        lfp,
-        Hydrostns,
-        ClimateStns
+        Gorner_Sub, 
+        Aletsch_sub,               
+        Aletsch_riv,
+        Gorner_riv,
     ],
     target: 'map',
     view: new View({
-        center: Transform([8.001124, 46.450142], 'EPSG:4326', 'EPSG:3857'),
+        center: Transform([8.001124, 46.200142], 'EPSG:4326', 'EPSG:3857'),
         
         // center: Transform([51.43 , 35.701949], 'EPSG:4326', 'EPSG:3857'),
         // projection: projection,
-        zoom: 11
+        zoom: 9.5
     })
 });
 
@@ -232,3 +263,82 @@ map.getLayers().forEach(function (layer) {
     }
 
 });
+
+
+
+
+
+function setStyle(feature, resolution){
+    var id = feature.get('OBJECTID');
+    var element = styleJson[id - 1]["PCP"];
+    console.log(element);
+    return pcpStyle[element/40];
+}
+
+function readFile(path) {
+    var result = null;
+    var request = new XMLHttpRequest();
+    request.open('GET', path, false);
+    request.send();
+    if(request.status == 200){
+        result = request.response;
+    }
+    return JSON.parse(result);
+}
+
+var pcpStyle = [
+    new Style({
+        fill: new Fill({
+            color: 'rgba(255,0,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    }),
+    new Style({
+        fill: new Fill({
+            color: 'rgba(200,50,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    }),
+    new Style({
+        fill: new Fill({
+            color: 'rgba(150,100,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    }),
+    new Style({
+        fill: new Fill({
+            color: 'rgba(100,150,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    }),
+    new Style({
+        fill: new Fill({
+            color: 'rgba(50,200,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    }),
+    new Style({
+        fill: new Fill({
+            color: 'rgba(0,255,0,1)'
+        }),
+        stroke: new Stroke({
+            color: '#0ff',
+            width: 1
+        })
+    })
+]
