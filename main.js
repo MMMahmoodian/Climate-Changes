@@ -302,7 +302,7 @@ function setStyle(feature, resolution){
     // return pcpStyle[0];
     // console.log("Style called!")
     var id = feature.get('OBJECTID');
-    var element = styleJson[id - 1]["PCP"];
+    var element = styleJson[id]["PCP"];
     var intvalue = Math.floor( element/40 );
     return pcpStyle[intvalue];
 }
