@@ -12,11 +12,13 @@ import { transform as Transform } from 'ol/proj';
 import BingMaps from 'ol/source/BingMaps.js';
 import { bbox as bboxStrategy } from 'ol/loadingstrategy.js';
 
-// import createItems from 'ol/tripleM/LayerList.js';
-
 
 var styleJson = readFile('./json/test.json');
-console.log(styleJson);
+if(styleJson == null){
+    console.log("Failed to load json file!")
+}else{
+    console.log("Json file loaded!")
+}
 
 
 var pcpStyle = [
@@ -75,6 +77,7 @@ var pcpStyle = [
         })
     })
 ];
+
 var defaultStyle = {
     'Point': new Style({
         image: new CircleStyle({
@@ -163,37 +166,11 @@ var Aletsch_riv = new ImageLayer({
         serverType: 'geoserver'
     })
 });
-// console.log(Aletsch_riv.get('OBJECTID'));
-// var Aletsch_sub = new ImageLayer({
-//     opacity: 0.5,    
-    
-//     title: "Aletsch_sub",
-//     // extent: [-13884991, 2870341, -7455066, 6338219],
-//     source: new ImageWMS({
-//         url: 'http://95.216.0.116:8080/geoserver/wms',
-//         params: { 'LAYERS': 'Glacier:Aletsch_sub' },
-//         ratio: 1,
-//         serverType: 'geoserver'
-//     }),
-//     style: new Style({
-//         fill: new Fill({
-//             color: 'rgba(255,0,0,0.1)'
-//         }),
-//         stroke: new Stroke({
-//             color: '#0ff',
-//             width: 1
-//         })
-//     })
-// });
 
 var Aletsch_subSource = new VectorSource({
     format: new GeoJSON(),
-    url: function (extent) {
-        return 'http://chakadwebgis.ir/geoserver/vaghefi/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=vaghefi:subs1_projected&' +
-            'outputFormat=application/json&srsname=EPSG:4326&' +
-            'bbox=' + extent.join(',') + ',EPSG:4326';
-    },
-    // maxFeatures=50&outputFormat=application%2Fjson
+    url: 'http://chakadwebgis.ir/geoserver/vaghefi/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=vaghefi:subs1_projected&' +
+    'outputFormat=application/json&srsname=EPSG:4326',
     strategy: bboxStrategy
 });
 
@@ -205,7 +182,6 @@ var Aletsch_sub = new VectorLayer({
 
 var Gorner_riv = new ImageLayer({
     title: "Gorner_riv",
-    // extent: [-13884991, 2870341, -7455066, 6338219],
     source: new ImageWMS({
         url: 'http://95.216.0.116:8080/geoserver/wms',
         params: { 'LAYERS': 'Glacier:Gorner_riv' },
@@ -218,7 +194,6 @@ var Gorner_Sub = new ImageLayer({
     opacity: 0.5,
     
     title: "Gorner_Sub",
-    // extent: [-13884991, 2870341, -7455066, 6338219],
     source: new ImageWMS({
         url: 'http://95.216.0.116:8080/geoserver/wms',
         params: { 'LAYERS': 'Glacier:Gorner_Sub' },
@@ -242,9 +217,6 @@ var map = new Map({
     target: 'map',
     view: new View({
         center: Transform([8.001124, 46.200142], 'EPSG:4326', 'EPSG:3857'),
-        
-        // center: Transform([51.43 , 35.701949], 'EPSG:4326', 'EPSG:3857'),
-        // projection: projection,
         zoom: 9.5
     })
 });
@@ -265,14 +237,13 @@ var displayFeatureInfo = function (pixel) {
     map.forEachFeatureAtPixel(pixel, function (feature) {
         features.push(feature);
     });
-    // console.log(features);
     if (features.length > 0) {
         var info = [];
         var i, ii;
         for (i = 0, ii = features.length; i < ii; ++i) {
             info.push(features[i].get('name'));
         }
-        // console.log(info);
+        
         document.getElementById('info').innerHTML = info.join(', ') || '&nbsp';
     } else {
         document.getElementById('info').innerHTML = '&nbsp;';
@@ -328,11 +299,12 @@ map.getLayers().forEach(function (layer) {
 
 
 function setStyle(feature, resolution){
-    console.log("set style called!");
+    // return pcpStyle[0];
+    // console.log("Style called!")
     var id = feature.get('OBJECTID');
     var element = styleJson[id - 1]["PCP"];
-    console.log(element);
-    return pcpStyle[element/40];
+    var intvalue = Math.floor( element/40 );
+    return pcpStyle[intvalue];
 }
 
 function readFile(path) {
